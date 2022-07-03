@@ -8,6 +8,8 @@ import ShowAllProducts from "./ui-components/ShowAllProducts";
 import ShowCurrentInventory from "./ui-components/ShowCurrentInventory";
 
 function App() {
+
+  //fetching the product data from local json file
   const productData: Product[] = [];
   ProductData.products.map((product) => {
     let item = {
@@ -16,7 +18,8 @@ function App() {
     };
     return productData.push(item);
   });
-
+  
+  //fetching the inventories data from local json file
   const inventoryData: Inventory[] = [];
   InventoryData.inventory.map((inventory) => {
     let item = {
@@ -27,6 +30,7 @@ function App() {
     return inventoryData.push(item);
   });
 
+  // function to get all the products with their avialable stock
   function getAllProducts(): ProductInventory[] {
     let productInventory: ProductInventory[] = [];
     for (let p = 0; p < productData.length; p++) {
@@ -39,12 +43,8 @@ function App() {
         if (articleInventoryRequirement !== 0) {
           if (allInventoryAvailable) {
             for (let i = 0; i < inventoryData.length; i++) {
-              let inventoryStock: number = +inventoryData[i].stock;
-              //while(allInventoryAvailable)
-              if (
-                productData[p].containArticles[a].art_id ===
-                inventoryData[i].articleId
-              ) {
+              let inventoryStock: number = +inventoryData[i].stock;              
+              if (productData[p].containArticles[a].art_id === inventoryData[i].articleId) {
                 if (articleInventoryRequirement > inventoryStock) {
                   allInventoryAvailable = false;
                   maxProdQantity = 0;
@@ -54,11 +54,7 @@ function App() {
                   maxProdQantity = inventoryStock / articleInventoryRequirement;
                   index++;
                 }
-
-                if (
-                  maxProdQantity >
-                  inventoryStock / articleInventoryRequirement
-                ) {
+                if (maxProdQantity > inventoryStock / articleInventoryRequirement) {
                   maxProdQantity = inventoryStock / articleInventoryRequirement;
                 }
               }
@@ -69,7 +65,6 @@ function App() {
       if (allInventoryAvailable === false) {
         maxProdQantity = 0;
       }
-
       productInventory.push({
         name: productData[p].name,
         stock: String(maxProdQantity.toFixed(0)),
@@ -78,6 +73,7 @@ function App() {
     return productInventory;
   }
 
+  // function for removing the product quantity and inventories after purchase of product
   function removeProduct(
     productName: string,
     quantityOfProduct: number
@@ -127,6 +123,8 @@ function App() {
     return inventoryData;
   }
 
+  //funtion to show result when submmit the praoduct name and desired quantity. 
+  // It will whether stock available or not
   function responseMsgOnSale(): string {
     let id1: boolean = false;
     let id2: boolean = false;
